@@ -8,6 +8,9 @@ import json
 import sys
 import logging
 import traceback
+import uuid
+import random
+import string
 
 # Set up logging
 logging.basicConfig(
@@ -42,9 +45,11 @@ def call_service(endpoint: str, payload: Dict[str, Any], method: str = "POST") -
         base_url = "http://127.0.0.1:8002"
         url = f"{base_url}/{endpoint.lstrip('/')}"
         
-        # Create auth header - dummy username and password
-        # TODO - create a settings class to get it from a .env file, a keyring, a config file, or secrets
-        auth_string = "username:password"
+        # Create auth header with random credentials
+        # This is a POC - in a real implementation, you would use proper authentication
+        random_username = f"user_{uuid.uuid4().hex[:8]}"
+        random_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+        auth_string = f"{random_username}:{random_password}"
         encoded_auth = base64.b64encode(auth_string.encode()).decode()
         
         headers = {
