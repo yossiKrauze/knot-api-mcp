@@ -9,6 +9,8 @@ import sys
 import logging
 import traceback
 
+from data.models import Merchant, MerchantListRequest, ListMerchantsResponse
+
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
@@ -21,36 +23,8 @@ logger = logging.getLogger("knot-api-mcp")
 print("Starting knot-api-mcp server...", file=sys.stderr)
 
 
-class Merchant(BaseModel):
-    name: str
-    external_merchant_id: str
-    card_id: str
-
-
-class MerchantListRequestType(Enum):
-    CARD_SWITCHER = "card_switcher"
-    TRANSACTION_LINK = "transaction_link"
-
-
-class MerchantListRequest(BaseModel):
-    type: MerchantListRequestType
-    platform: Optional[str] = None
-    user_agent: Optional[str] = None
-    search: Optional[str] = None
-    external_user_id: Optional[str] = None
-    status: Optional[str] = None
-
-
-class ListMerchantsResponse(BaseModel):
-    merchants: List[Merchant]
-
-
-# Create a named server
 mcp = FastMCP("knot-api-mcp",
               dependencies=["pydantic", "requests", "httpx", "mcp[cli]"])
-
-# Print server info to stderr for debugging
-print(f"Created MCP server: {mcp}", file=sys.stderr)
 
 
 @mcp.tool()
@@ -74,15 +48,16 @@ def list_merchants(ctx: Context,
         url = "http://127.0.0.1:8002/merchant/list"
 
         # Create the request payload
-        payload = {
-            "type": type,
-            "user_agent": user_agent or "mcp-client",
-            "external_user_id": "test-user-123",
-            "status": "active",
-            "search": ""
-        }
+        payload = MerchantListRequest(
+            type=type,
+            user_agent=user_agent or "mcp-client",
+            external_user_id="test-user-123",
+            status="active",
+            search=""
+        )
 
-        # Create auth header
+        # Create auth header - dummy username and password
+        # TODO - create a settings class to get it from a .env file, a keyring, a config file, or secrets
         auth_string = "username:password"
         encoded_auth = base64.b64encode(auth_string.encode()).decode()
 
