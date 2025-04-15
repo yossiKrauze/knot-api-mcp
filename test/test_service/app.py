@@ -37,3 +37,4 @@ def list_merchants(request: MerchantListRequest, authorization: str = Depends(ve
         Merchant(name="Target", external_merchant_id="target",
                  card_id="card_102")
     ])
+
