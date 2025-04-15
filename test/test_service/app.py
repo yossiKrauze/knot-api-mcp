@@ -1,12 +1,17 @@
-from data.models import Merchant, MerchantListRequest, ListMerchantsResponse
+#!/usr/bin/env python3
+# ruff: noqa: E402, F401, I001
+
 from fastapi import FastAPI, HTTPException, Depends, Header
 from typing import Optional
 import sys
 import os
 
-# Add the parent directory to sys.path to allow importing from data.models
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '../..')))
+
+from data.models import Merchant, MerchantListRequest, ListMerchantsResponse, SessionData, SessionExtensionRequest, SessionExtensionResponse, Session, SwitchCardRequest
+
+
 
 app = FastAPI()
 
@@ -38,3 +43,23 @@ def list_merchants(request: MerchantListRequest, authorization: str = Depends(ve
                  card_id="card_102")
     ])
 
+
+@app.post("/session/create", response_model=Session)
+def create_session(request: SessionData, authorization: str = Depends(verify_auth)):
+    # Log the request for debugging
+    print(f"Received request: {request}")
+    return Session(session_id="test-session-id")
+
+
+@app.post("/session/extend", response_model=SessionExtensionResponse)
+def extend_session(request: SessionExtensionRequest, authorization: str = Depends(verify_auth)):
+    # Log the request for debugging
+    print(f"Received request: {request}")
+    return SessionExtensionResponse(session_id="test-session-id")
+
+
+@app.post("/card")
+def switch_card(request: SwitchCardRequest, authorization: str = Depends(verify_auth)):
+    # Log the request for debugging
+    print(f"Received request: {request}")
+    return {"message": "success"}

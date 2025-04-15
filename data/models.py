@@ -54,7 +54,7 @@ class JWEData(BaseModel):
 
 class SessionData(BaseModel):
     type: str
-    external_user_id: str
+    external_user_id: Optional[str] = None
     card_id: Optional[str] = None
     phone_number: Optional[str] = None
     email: Optional[str] = None
@@ -92,3 +92,21 @@ class UnlinkMerchant(BaseModel):
             return v
 
         raise ValueError("merchant_id must be an integer")
+
+
+class Session(BaseModel):
+    session_id: str
+
+
+class SessionExtensionRequest(Session):
+    pass
+
+
+class SessionExtensionResponse(Session):
+    pass
+
+
+class SwitchCardRequest(BaseModel):
+    task_id: str
+    user: User
+    card: Card
