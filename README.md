@@ -52,7 +52,7 @@ uv run knot-api-mcp.py
 {
   "mcpServers": {
     "knot-api-mcp": {
-      "command": "/Users/yossikrauze/.local/bin/uv",
+      "command": "/PATH_TO/.local/bin/uv",
       "args": [
         "run",
         "--with",
@@ -65,7 +65,7 @@ uv run knot-api-mcp.py
         "requests",
         "mcp",
         "run",
-        "/Users/yossikrauze/Dev/knotapi/knot-api-mcp/knot-api-mcp.py"
+        "/PATH_TO/knot-api-mcp/knot-api-mcp.py"
       ]
     }
   }
